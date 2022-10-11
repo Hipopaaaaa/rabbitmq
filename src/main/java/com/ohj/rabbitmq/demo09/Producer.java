@@ -8,6 +8,7 @@ import com.rabbitmq.client.impl.AMQBasicProperties;
 
 import java.util.Scanner;
 
+//死信队列
 public class Producer {
 
     //正常交换机
@@ -20,10 +21,10 @@ public class Producer {
         channel.exchangeDeclare(NORMAL_EXCHANGE, BuiltinExchangeType.DIRECT);
 
         //设置死信消息，ttl为 10s
-        AMQP.BasicProperties props = new AMQP.BasicProperties().builder().expiration("100000").build();
+        //AMQP.BasicProperties props = new AMQP.BasicProperties().builder().expiration("100000").build();
         for (int i = 0; i < 11; i++) {
             String message = i + "";
-            channel.basicPublish(NORMAL_EXCHANGE, "zhangsan", props, message.getBytes("UTF-8"));
+            channel.basicPublish(NORMAL_EXCHANGE, "zhangsan", null, message.getBytes("UTF-8"));
             System.out.println("消息发送成功");
         }
     }

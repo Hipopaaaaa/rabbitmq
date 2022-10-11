@@ -32,6 +32,8 @@ public class Consumer1 {
         arguments.put("x-dead-letter-exchange",DEAD_EXCHANGE);
         //设置死信交换机的routingKey为lisi
         arguments.put("x-dead-letter-routing-key","lisi");
+        //设置队列的最大长度为6
+        //arguments.put("x-max-length",6);
         channel.queueDeclare(NORMAL_QUEUE,false,false,false,arguments);
 
 
@@ -45,8 +47,19 @@ public class Consumer1 {
 
 
         DeliverCallback deliverCallback=( consumerTag,  message)->{
-            System.out.println("Consumer1："+new String(message.getBody(),"UTF-8"));
+            String msg = new String(message.getBody(), "UTF-8");
+
+            //拒绝消息且不放回队列
+            if(Integer.parseInt(msg)>5){
+                channel.basicReject(message.getEnvelope().getDeliveryTag(),false);
+            }else {
+                System.out.println("Consumer1："+msg);
+                channel.basicAck(message.getEnvelope().getDeliveryTag(),false);
+            }
+
         };
-        channel.basicConsume(NORMAL_QUEUE,true,deliverCallback,consumerTag -> {});
+        //开启手动应答
+        channel.basicConsume(NORMAL_QUEUE,false,deliverCallback,consumerTag -> {});
     }
+
 }
