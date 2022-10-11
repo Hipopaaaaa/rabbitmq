@@ -14,7 +14,10 @@ public class Worker01 {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Channel channel = RabbitMQUtils.getChannel();
-        channel.basicQos(1);
+
+        channel.basicQos(2);
+
+        //channel.basicQos(1);
         DeliverCallback deliverCallback = (consumerTag, message)->{
             //睡眠1秒
             try {
